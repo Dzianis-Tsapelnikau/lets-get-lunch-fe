@@ -4,7 +4,13 @@ import {HomeComponent} from "./home/home.component";
 
 const routes: Routes = [{
   path: '', component: HomeComponent
-}];
+},
+  {
+    path: 'signup',
+    loadChildren: () => import('./signup/signup.module').then(m => m.SignupModule)
+  }
+];
+
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
