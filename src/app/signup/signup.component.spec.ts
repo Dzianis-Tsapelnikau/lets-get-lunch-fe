@@ -6,11 +6,13 @@ import {AuthService} from "../services/auth/auth.service";
 import {DebugElement} from "@angular/core";
 import {By} from "@angular/platform-browser";
 import {of, throwError} from "rxjs";
+import {Router} from "@angular/router";
 
 let component: SignupComponent;
 let fixture: ComponentFixture<SignupComponent>;
 let signupPage: SignupPage;
 let authService: AuthService;
+let router: Router;
 
 class SignupPage{
   submitBtn: DebugElement;
@@ -25,6 +27,9 @@ class SignupPage{
   }
 }
 
+class MockRouter{
+  navigate(path) {}
+}
 class MockAuthService{
   signup(credentials){}
 }
@@ -36,7 +41,7 @@ describe('SignupComponent', () => {
     })
       .overrideComponent(SignupComponent, {
         set: {
-          providers: [{provide: AuthService, useClass: MockAuthService}]
+          providers: [{provide: AuthService, useClass: MockAuthService},{provide: Router, useClass: MockRouter}]
         }
       })
     .compileComponents();
@@ -47,6 +52,7 @@ describe('SignupComponent', () => {
     component = fixture.componentInstance;
     signupPage = new SignupPage();
     authService = fixture.debugElement.injector.get(AuthService);
+    router = fixture.debugElement.injector.get(Router);
     fixture.detectChanges();
     return fixture.whenStable().then(value => {
       fixture.detectChanges();
@@ -69,6 +75,7 @@ describe('SignupComponent', () => {
     spyOn(authService, 'signup').and.callFake(()=>{
       return of({ token: 's3cr3tt0ken'});
     });
+    spyOn(router,'navigate');
     signupPage.submitBtn.nativeElement.click();
 
     expect(authService.signup).toHaveBeenCalledWith({
@@ -76,7 +83,7 @@ describe('SignupComponent', () => {
       password: 'password',
       dietPreferences: ['BBQ', 'Burger']
     });
-    // Add expectation to redirect to user dashboard
+    expect(router.navigate).toHaveBeenCalledWith(['/dashboard']);
   });
 
   it('should display an error message with invalid credentials', ()=>{
