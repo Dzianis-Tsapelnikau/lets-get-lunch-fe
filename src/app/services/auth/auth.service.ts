@@ -3,13 +3,14 @@ import {User} from "./user";
 import {Observable} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {map, mergeMap} from "rxjs/operators";
+import {JwtHelperService} from "@auth0/angular-jwt";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private jwtHelper: JwtHelperService) {
   }
 
   signup(user: User): Observable<object> {
@@ -21,5 +22,9 @@ export class AuthService {
       localStorage.setItem('Authorization', res.token);
       return res;
     }));
+  }
+
+  isLoggedIn():boolean {
+    return !this.jwtHelper.isTokenExpired();
   }
 }

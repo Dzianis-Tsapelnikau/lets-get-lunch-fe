@@ -5,6 +5,11 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {HomeComponent} from './home/home.component';
 import {HttpClientModule} from "@angular/common/http";
+import {JwtModule} from '@auth0/angular-jwt';
+
+export function tokenGetter() {
+  return localStorage.getItem('Authorization');
+}
 
 @NgModule({
   declarations: [
@@ -14,7 +19,12 @@ import {HttpClientModule} from "@angular/common/http";
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter
+      }
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]
