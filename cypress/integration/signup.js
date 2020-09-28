@@ -42,7 +42,7 @@
       .url().should('include','/signup')
       .get('#username').type('user')
       .get('#password').type('password')
-      .get('#form').submit()
+      .get('form').submit()
       .url().should('include','/dashboard');
 
     cy
@@ -53,7 +53,7 @@
       .url().should('include','/signup')
       .get('#username').type('user')
       .get('#password').type('password')
-      .get('#form').submit()
+      .get('form').submit()
       .get('.alert').should('be.visible').should('have.text','This user already exists.');
   });
 });

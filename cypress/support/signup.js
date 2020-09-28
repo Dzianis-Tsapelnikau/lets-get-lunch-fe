@@ -7,6 +7,6 @@
     .get('#username').type(username)
     .get('#password').type(password)
     .get('#BBQ').click()
-    .get('#form').submit()
+    .get('form').submit()
     .url().should('include', '/dashboard');
 });
