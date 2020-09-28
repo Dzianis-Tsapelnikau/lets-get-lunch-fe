@@ -7,6 +7,7 @@ import {of} from 'rxjs';
 
 import {AuthService} from './auth.service';
 import {JwtModule} from '@auth0/angular-jwt';
+import {Local} from "protractor/built/driverProviders";
 
 export function tokenGetter() {
   return localStorage.getItem('Authorization');
@@ -89,9 +90,12 @@ describe('AuthService', () => {
         response = res;
       });
 
+      spyOn(authService.loggedIn,'emit');
+
       http.expectOne('http://localhost:8080/api/sessions').flush(loginResponse);
       expect(response).toEqual(loginResponse);
-      expect(localStorage.getItem('Authorization')).toEqual('s3cr3tt0ken');
+      expect(localStorage.getItem(AuthService.AuthorizationLocalStorageItemName)).toEqual('s3cr3tt0ken');
+      expect(authService.loggedIn.emit).toHaveBeenCalled();
       http.verify();
     });
   });
@@ -104,8 +108,21 @@ describe('AuthService', () => {
       expect(authService.isLoggedIn()).toEqual(true);
     });
     it('should return false if the user is not logged in', ()=>{
-      localStorage.removeItem('Authorization');
+      localStorage.removeItem(AuthService.AuthorizationLocalStorageItemName);
       expect(authService.isLoggedIn()).toEqual(false);
     });
-  })
+  });
+
+  describe('logout', ()=>{
+    it('should clear the token from local storage', ()=>{
+      spyOn(authService.loggedIn, 'emit');
+      localStorage.setItem(AuthService.AuthorizationLocalStorageItemName, 's3cr3tt0ken');
+      expect(localStorage.getItem(AuthService.AuthorizationLocalStorageItemName)).toEqual('s3cr3tt0ken');
+
+      authService.logout();
+
+      expect(localStorage.getItem(AuthService.AuthorizationLocalStorageItemName)).toBeNull();
+      expect(authService.loggedIn.emit).toHaveBeenCalledWith(false);
+    });
+  });
 });
