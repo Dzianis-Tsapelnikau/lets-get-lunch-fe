@@ -55,7 +55,7 @@ describe('NavbarComponent', () => {
 
     it('should initialize to see if a user is logged in', () => {
       expect(authService.isLoggedIn).toHaveBeenCalled();
-      expect(component.isLoggedIn).toBeTrue();
+      expect(component.isLoggedIn).toBe(true);
     });
 
     it('should have a link to the dashboard when clicking the brand name', () => {
@@ -81,7 +81,7 @@ describe('NavbarComponent', () => {
     });
     it('should initialize to se if a user is logged in', () => {
       expect(authService.isLoggedIn).toHaveBeenCalled();
-      expect(component.isLoggedIn).toBeFalse();
+      expect(component.isLoggedIn).toBe(false);
     });
     it('should have a link to the homepage when clicking the brand name', () => {
       const link = fixture.debugElement.query(By.css('.navbar-brand'));

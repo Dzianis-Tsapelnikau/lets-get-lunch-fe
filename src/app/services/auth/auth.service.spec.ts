@@ -7,8 +7,6 @@ import {of} from 'rxjs';
 
 import {AuthService} from './auth.service';
 import {JwtHelperService, JwtModule} from '@auth0/angular-jwt';
-import {Local} from "protractor/built/driverProviders";
-import {extractOriginalSegments} from "@angular/compiler-cli/src/ngtsc/sourcemaps/src/source_file";
 
 export function tokenGetter() {
   return localStorage.getItem('Authorization');

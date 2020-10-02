@@ -3,7 +3,6 @@ import { TestBed } from '@angular/core/testing';
 import { AuthInterceptorService } from './auth-interceptor.service';
 import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
 import {HTTP_INTERCEPTORS, HttpClient} from "@angular/common/http";
-import localizeExtractLoader from "@angular-devkit/build-angular/src/extract-i18n/ivy-extract-loader";
 import {AuthService} from "../services/auth/auth.service";
 
 describe('AuthInterceptorService', () => {
@@ -33,6 +32,6 @@ describe('AuthInterceptorService', () => {
     httpClient.get('/test').subscribe(res=>{});
     const req = http.expectOne('/test');
     req.flush('ok');
-    expect(req.request.headers.has(AuthService.AuthorizationLocalStorageItemName)).toBeFalse();
+    expect(req.request.headers.has(AuthService.AuthorizationLocalStorageItemName)).toBe(false);
   });
 });
