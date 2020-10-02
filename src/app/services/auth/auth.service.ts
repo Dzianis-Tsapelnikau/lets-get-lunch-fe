@@ -36,4 +36,8 @@ export class AuthService {
     localStorage.removeItem(AuthService.AuthorizationLocalStorageItemName);
     this.loggedIn.emit(false);
   }
+
+  get currentUser() {
+    return this.jwtHelper.decodeToken(localStorage.getItem(AuthService.AuthorizationLocalStorageItemName));
+  }
 }

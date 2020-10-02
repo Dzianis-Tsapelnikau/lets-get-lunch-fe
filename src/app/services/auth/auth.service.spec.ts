@@ -6,8 +6,9 @@ import {
 import {of} from 'rxjs';
 
 import {AuthService} from './auth.service';
-import {JwtModule} from '@auth0/angular-jwt';
+import {JwtHelperService, JwtModule} from '@auth0/angular-jwt';
 import {Local} from "protractor/built/driverProviders";
+import {extractOriginalSegments} from "@angular/compiler-cli/src/ngtsc/sourcemaps/src/source_file";
 
 export function tokenGetter() {
   return localStorage.getItem('Authorization');
@@ -16,6 +17,7 @@ export function tokenGetter() {
 describe('AuthService', () => {
   let authService: AuthService;
   let http: HttpTestingController;
+  let jwtHelper: JwtHelperService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -30,8 +32,9 @@ describe('AuthService', () => {
       providers: [AuthService]
     });
 
-    authService = TestBed.get(AuthService);
-    http = TestBed.get(HttpTestingController);
+    authService = TestBed.inject(AuthService);
+    http = TestBed.inject(HttpTestingController);
+    jwtHelper = TestBed.inject(JwtHelperService);
   });
 
   it('should be created', () => {
@@ -90,7 +93,7 @@ describe('AuthService', () => {
         response = res;
       });
 
-      spyOn(authService.loggedIn,'emit');
+      spyOn(authService.loggedIn, 'emit');
 
       http.expectOne('http://localhost:8080/api/sessions').flush(loginResponse);
       expect(response).toEqual(loginResponse);
@@ -100,21 +103,21 @@ describe('AuthService', () => {
     });
   });
 
-  describe('isLoggedIn', ()=>{
-    it('should return true if the user is logged in', ()=>{
+  describe('isLoggedIn', () => {
+    it('should return true if the user is logged in', () => {
       localStorage.setItem('Authorization', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' +
         'eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.' +
         'TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ');
       expect(authService.isLoggedIn()).toEqual(true);
     });
-    it('should return false if the user is not logged in', ()=>{
+    it('should return false if the user is not logged in', () => {
       localStorage.removeItem(AuthService.AuthorizationLocalStorageItemName);
       expect(authService.isLoggedIn()).toEqual(false);
     });
   });
 
-  describe('logout', ()=>{
-    it('should clear the token from local storage', ()=>{
+  describe('logout', () => {
+    it('should clear the token from local storage', () => {
       spyOn(authService.loggedIn, 'emit');
       localStorage.setItem(AuthService.AuthorizationLocalStorageItemName, 's3cr3tt0ken');
       expect(localStorage.getItem(AuthService.AuthorizationLocalStorageItemName)).toEqual('s3cr3tt0ken');
@@ -125,4 +128,23 @@ describe('AuthService', () => {
       expect(authService.loggedIn.emit).toHaveBeenCalledWith(false);
     });
   });
+
+  describe('currentUser', () => {
+    it('should return a user object with a valid token', () => {
+      spyOn(localStorage, 'getItem').and.returnValue('s3cr3tt0ken');
+      spyOn(jwtHelper, 'decodeToken').and.callFake(arg0 => {
+        return {
+          exp: 1517847480,
+          iat: 1517840280,
+          username: 'username',
+          _id: '5a6f41c94000495518d2673f'
+        }
+      });
+      const res = authService.currentUser;
+
+      expect(localStorage.getItem).toHaveBeenCalled();
+      expect(res.username).toBeDefined();
+      expect(res._id).toBeDefined();
+    });
+  })
 });
