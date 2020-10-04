@@ -22,7 +22,7 @@ describe('EventsService', () => {
   });
 
   describe('create', () => {
-    it('should return an event object with valid event details', done => {
+    it('should return an event object with valid event details', () => {
       const event: Event = {
         '_creator': '5a550ea739fbc4ca3ee0ce58',
         'title': 'My first event',
@@ -57,7 +57,7 @@ describe('EventsService', () => {
       expect(response).toEqual(eventResponse);
       http.verify();
     });
-    it('should return a 500 with invalid event details', done => {
+    it('should return a 500 with invalid event details', () => {
       const event: Event = {
         '_creator': undefined,
         'title': undefined,
