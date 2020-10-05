@@ -1,0 +1,1 @@
+﻿Cypress.Commands.add('createEvent',())

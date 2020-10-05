@@ -10,8 +10,23 @@ import {Event} from "../services/events/event";
 })
 export class DashboardComponent implements OnInit {
   events: Array<Event>
+  view = 'week';
+  viewDate: Date = new Date();
+  error: string;
+  noEvents: string;
 
   constructor(private authService: AuthService, private eventsService: EventsService) {
+    const userId = authService.currentUser.id;
+    this.eventsService.getUserEvents(userId).subscribe(res => {
+      console.log('events for user', res);
+      if (res) {
+        this.events = this.addEventColors(this.addJSDate(this.events));
+      } else {
+        this.noEvents = 'You are not a member of any events.'
+      }
+    }, error1 => {
+      this.error = error1.error.message;
+    })
   }
 
   ngOnInit(): void {
@@ -23,4 +38,22 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  eventClicked(event: Event) {
+
+  }
+
+  addJSDate(events: Array<Event>) {
+    return events.map((event) => {
+      event.start = new Date(event.startTime);
+      event.end = new Date(event.endTime);
+      return event;
+    });
+  }
+
+  addEventColors(events: Array<Event>) {
+    return events.map((event) => {
+      event.color = new Date(event.endTime);
+      return event;
+    });
+  }
 }

@@ -1,14 +1,13 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {Event} from "../services/events/event";
 import {DashboardComponent} from './dashboard.component';
 import {of} from "rxjs";
 import {DashboardModule} from "./dashboard.module";
 import {RouterTestingModule} from "@angular/router/testing";
 import {AuthService} from "../services/auth/auth.service";
-import {Mock} from "protractor/built/driverProviders";
 import {EventsService} from "../services/events/events.service";
-import {extendObject} from "ng-pick-datetime/utils";
-import {User} from "../services/auth/user";
+import {DebugElement} from "@angular/core";
+import {By} from "@angular/platform-browser";
 
 const currentUser = {
   'username': 'myUser',
@@ -31,7 +30,9 @@ const events: Array<Event> = [{
 }];
 
 class MockAuthService {
-  get currentUser() { return currentUser; }
+  get currentUser() {
+    return currentUser;
+  }
 }
 
 
@@ -44,6 +45,8 @@ describe('DashboardComponent', () => {
   let fixture: ComponentFixture<DashboardComponent>;
   let authService: AuthService;
   let eventService: EventsService;
+  let viewDateElement: DebugElement[];
+  let calendarEventElement: DebugElement[];
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -64,21 +67,52 @@ describe('DashboardComponent', () => {
       .compileComponents();
   });
 
-  beforeEach(() => {
+  beforeEach(async (() => {
     fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;
     authService = fixture.debugElement.injector.get(AuthService);
     eventService = fixture.debugElement.injector.get(EventsService);
+    spyOn(component, "addEventColors").and.callThrough();
+    spyOn(component, "addJSDate").and.callThrough();
     fixture.detectChanges();
-  });
+    return fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      viewDateElement = fixture.debugElement.queryAll(By.css('toggle-view btn-primary'));
+      calendarEventElement = fixture.debugElement.queryAll(By.css('.cal-event'));
+    });
+  }));
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
   it('should initialize with a call to get the current user\'s events', () => {
-    spyOnProperty(authService,'currentUser','get').and.returnValue(currentUser);
-    expect(authService.currentUser).toHaveBeenCalled();
+    // spyOnProperty(authService, 'currentUser', 'get').and.callThrough();
+    // expect(authService.currentUser).toHaveBeenCalled();
     expect(eventService.getUserEvents).toHaveBeenCalledWith(currentUser._id);
+    expect(component.addJSDate).toHaveBeenCalled();
+    expect(component.addEventColors).toHaveBeenCalled();
     expect(component.events.length).toEqual(1);
-  })
+  });
+
+  it('should initialize the calendar to a week view', () => {
+    expect(viewDateElement[0].classes.active).toEqual(false);
+    expect(viewDateElement[1].classes.active).toEqual(true);
+    expect(viewDateElement[0].classes.active).toEqual(false);
+  });
+  it('should display events within the current week in the calendar', () => {
+    expect(calendarEventElement[0].nativeElement.textContent).toContain('My first event')
+  });
+  describe('addJSDate', () => {
+    it('should add a "start" and "end" property to an event', () => {
+      const result = component.addJSDate(events);
+      expect(result[0].start).toEqual(jasmine.any(Date));
+      expect(result[0].end).toEqual(jasmine.any(Date));
+    });
+  });
+  describe('addEventsColor', () => {
+    it('should add a color property to an event', () => {
+      const result = component.addEventColors(events);
+      expect(result[0].color).toBeDefined();
+    })
+  });
 });
