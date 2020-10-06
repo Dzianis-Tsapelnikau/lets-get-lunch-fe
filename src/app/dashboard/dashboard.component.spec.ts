@@ -67,26 +67,28 @@ describe('DashboardComponent', () => {
       .compileComponents();
   });
 
-  beforeEach(async (() => {
+  beforeEach(async () => {
+    spyOn(DashboardComponent.prototype, "addEventColors").and.callThrough();
+    spyOn(DashboardComponent.prototype, "addJSDate").and.callThrough();
+    spyOnProperty(MockAuthService.prototype, 'currentUser', 'get').and.callThrough();
     fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;
     authService = fixture.debugElement.injector.get(AuthService);
     eventService = fixture.debugElement.injector.get(EventsService);
-    spyOn(component, "addEventColors").and.callThrough();
-    spyOn(component, "addJSDate").and.callThrough();
+
     fixture.detectChanges();
     return fixture.whenStable().then(() => {
       fixture.detectChanges();
-      viewDateElement = fixture.debugElement.queryAll(By.css('toggle-view btn-primary'));
+      viewDateElement = fixture.debugElement.queryAll(By.css('.toggle-view .btn-primary'));
       calendarEventElement = fixture.debugElement.queryAll(By.css('.cal-event'));
     });
-  }));
+  });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
   it('should initialize with a call to get the current user\'s events', () => {
-    // spyOnProperty(authService, 'currentUser', 'get').and.callThrough();
+
     // expect(authService.currentUser).toHaveBeenCalled();
     expect(eventService.getUserEvents).toHaveBeenCalledWith(currentUser._id);
     expect(component.addJSDate).toHaveBeenCalled();
@@ -95,9 +97,9 @@ describe('DashboardComponent', () => {
   });
 
   it('should initialize the calendar to a week view', () => {
-    expect(viewDateElement[0].classes.active).toEqual(false);
+    expect(viewDateElement[0].classes.active).toBeUndefined();
     expect(viewDateElement[1].classes.active).toEqual(true);
-    expect(viewDateElement[0].classes.active).toEqual(false);
+    expect(viewDateElement[2].classes.active).toBeUndefined();
   });
   it('should display events within the current week in the calendar', () => {
     expect(calendarEventElement[0].nativeElement.textContent).toContain('My first event')
@@ -113,6 +115,6 @@ describe('DashboardComponent', () => {
     it('should add a color property to an event', () => {
       const result = component.addEventColors(events);
       expect(result[0].color).toBeDefined();
-    })
+    });
   });
 });

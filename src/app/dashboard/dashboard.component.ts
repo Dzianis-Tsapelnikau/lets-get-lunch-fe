@@ -20,7 +20,7 @@ export class DashboardComponent implements OnInit {
     this.eventsService.getUserEvents(userId).subscribe(res => {
       console.log('events for user', res);
       if (res) {
-        this.events = this.addEventColors(this.addJSDate(this.events));
+        this.events = this.addEventColors(this.addJSDate(res));
       } else {
         this.noEvents = 'You are not a member of any events.'
       }
@@ -52,7 +52,7 @@ export class DashboardComponent implements OnInit {
 
   addEventColors(events: Array<Event>) {
     return events.map((event) => {
-      event.color = new Date(event.endTime);
+      event.color = { primary: '#1E90FF', secondary: '#D1E8FF' };
       return event;
     });
   }
