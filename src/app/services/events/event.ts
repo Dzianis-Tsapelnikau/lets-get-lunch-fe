@@ -2,8 +2,7 @@ export interface Event {
   _creator: string;
   title: string;
   description?: string;
-  city: string;
-  state: string;
+  location: string;
   startTime: string;
   endTime: string;
   suggestLocations: Boolean;

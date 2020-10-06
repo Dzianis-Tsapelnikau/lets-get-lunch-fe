@@ -16,11 +16,14 @@ export class DashboardComponent implements OnInit {
   noEvents: string;
 
   constructor(private authService: AuthService, private eventsService: EventsService) {
-    const userId = authService.currentUser.id;
+  }
+
+  ngOnInit(): void {
+    const userId = this.authService.currentUser._id;
     this.eventsService.getUserEvents(userId).subscribe(res => {
       console.log('events for user', res);
       if (res) {
-        this.events = this.addEventColors(this.addJSDate(res));
+        this.events = this.mapEvents(res);
       } else {
         this.noEvents = 'You are not a member of any events.'
       }
@@ -29,17 +32,11 @@ export class DashboardComponent implements OnInit {
     })
   }
 
-  ngOnInit(): void {
-    const id = this.authService.currentUser._id;
-    this.eventsService.getUserEvents(id).subscribe(res => {
-      if (res) {
-        this.events = res;
-      }
-    });
+  mapEvents(events: Event[]): Event[] {
+    return this.addEventColors(this.addJSDate(events));
   }
 
   eventClicked(event: Event) {
-
   }
 
   addJSDate(events: Array<Event>) {
@@ -52,7 +49,7 @@ export class DashboardComponent implements OnInit {
 
   addEventColors(events: Array<Event>) {
     return events.map((event) => {
-      event.color = { primary: '#1E90FF', secondary: '#D1E8FF' };
+      event.color = {primary: '#1E90FF', secondary: '#D1E8FF'};
       return event;
     });
   }

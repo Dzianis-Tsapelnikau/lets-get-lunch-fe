@@ -14,8 +14,6 @@ declare var google: any;
 })
 export class EventCreateComponent implements OnInit {
   eventForm: FormGroup;
-  location: any;
-  @ViewChild('city', {static: false}) citySearch: ElementRef;
   error: string;
   success: string;
 
@@ -24,18 +22,18 @@ export class EventCreateComponent implements OnInit {
 
   ngOnInit(): void {
     this.createForm();
-    this.gmaps.load().then(() => {
-      const autocomplete = new google.maps.places.Autocomplete(this.citySearch.nativeElement, {
-        types: ['(cities)'],
-        componentRestrictions: {country: 'us'}
-      });
-      autocomplete.addListener('place_changed', () => {
-        this.ngZone.run(() => {
-          this.location = autocomplete.getPlace();
-          console.log('location',this.location);
-        });
-      });
-    });
+    // this.gmaps.load().then(() => {
+    //   const autocomplete = new google.maps.places.Autocomplete(this.citySearch.nativeElement, {
+    //     types: ['(cities)'],
+    //     componentRestrictions: {country: 'us'}
+    //   });
+    //   autocomplete.addListener('place_changed', () => {
+    //     this.ngZone.run(() => {
+    //       this.location = autocomplete.getPlace();
+    //       console.log('location',this.location);
+    //     });
+    //   });
+    // });
   }
 
   createForm() {
@@ -60,11 +58,10 @@ export class EventCreateComponent implements OnInit {
       description: this.eventForm.value.description,
       startTime: this.eventForm.value.startTime,
       endTime: this.eventForm.value.endTime,
-      city: this.location.address_components[0].long_name,
-      state: this.location.address_components[2].short_name,
+      location: this.eventForm.value.location,
       suggestLocations: this.eventForm.value.suggestLocations
     };
-    this.eventsService.create(event).subscribe(res=>{
+    this.eventsService.create(event).subscribe(res => {
       this.success = 'Your event has been created.';
     }, error => {
       this.error = error.error.message;
