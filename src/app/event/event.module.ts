@@ -5,10 +5,11 @@ import { EventRoutingModule } from './event-routing.module';
 import { EventCreateComponent } from './event-create/event-create.component';
 import {ReactiveFormsModule} from "@angular/forms";
 import {OwlDateTimeModule, OwlNativeDateTimeModule} from "ng-pick-datetime";
+import { EventViewComponent } from './event-view/event-view.component';
 
 
 @NgModule({
-  declarations: [EventCreateComponent],
+  declarations: [EventCreateComponent, EventViewComponent],
   imports: [
     CommonModule,
     EventRoutingModule,
