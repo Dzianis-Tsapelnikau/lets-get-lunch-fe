@@ -9,8 +9,8 @@
     it('should show a link to signup', () => {
       cy.get('[data-test=signup]').click().url().should('include', '/signup');
     });
-    it('should show a link to login', ()=>{
-      cy.get('[data-test=login]').click().url().should('include','/login');
+    it('should show a link to login', () => {
+      cy.get('[data-test=login]').click().url().should('include', '/login');
     });
 
     it('should redirect to the base url when the navbar brand is clicked', () => {
@@ -32,5 +32,10 @@
       cy
         .get('.navbar-brand').click().url().should('include', '/dashboard');
     });
+    it('should redirect to the event list', () => {
+      cy
+        .get('[data-test=events').should('have.text', 'Events')
+        .click().url().should('include', '/events');
+    })
   });
 });

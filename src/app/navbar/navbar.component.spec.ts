@@ -62,6 +62,10 @@ describe('NavbarComponent', () => {
       const link = fixture.debugElement.query(By.css('.navbar-brand'));
       expect(link.attributes.routerLink).toEqual('/dashboard');
     });
+    it('should have link to the event list', () => {
+      const link = fixture.debugElement.query(By.css('[data-test=events]'));
+      expect(link.attributes.routerLink).toEqual('/events');
+    });
     it('should have a link to logout visible', () => {
       const link = fixture.debugElement.query(By.css('[data-test=logout]'));
       expect(link.nativeElement.innerText).toEqual('Logout');
@@ -91,7 +95,7 @@ describe('NavbarComponent', () => {
       const link = fixture.debugElement.query(By.css('[data-test=signup]'));
       expect(link.attributes.routerLink).toEqual('/signup');
     });
-    it('should have a link to login visible', ()=>{
+    it('should have a link to login visible', () => {
       const link = fixture.debugElement.query(By.css('[data-test=login]'));
       expect(link.attributes.routerLink).toEqual('/login');
     });
