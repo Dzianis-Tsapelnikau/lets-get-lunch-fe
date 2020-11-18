@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Comment } from '../services/comments/comment';
+import { IComment } from '../services/comments/IComment';
 import { CommentsService } from '../services/comments/comments.service';
 import { AuthService } from '../services/auth/auth.service';
 
@@ -11,12 +11,12 @@ import { AuthService } from '../services/auth/auth.service';
 export class CommentCreateComponent implements OnInit {
   @Input() eventId!: string;
 
-  private _comments!: Array<Comment>;
-  public get comments(): Array<Comment> {
+  private _comments!: Array<IComment>;
+  public get comments(): Array<IComment> {
     return this._comments;
   }
 
-  public set comments(value: Array<Comment>) {
+  public set comments(value: Array<IComment>) {
     this._comments = value;
   }
 
@@ -68,7 +68,7 @@ export class CommentCreateComponent implements OnInit {
 
   addComment(userComment: string) {
     const user = this.authService.currentUser$;
-    const payload: Comment = {
+    const payload: IComment = {
       _event: this.eventId,
       _creator: user.getValue()!.id,
       content: userComment

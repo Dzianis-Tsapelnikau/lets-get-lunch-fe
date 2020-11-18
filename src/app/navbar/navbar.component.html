@@ -11,25 +11,25 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a *ngIf="!isLoggedIn"
+      <a *ngIf="!isLoggedIn$"
          class="navbar-brand"
          routerLink="">Let's Get Lunch</a>
-      <a *ngIf="isLoggedIn"
+      <a *ngIf="isLoggedIn$"
          class="navbar-brand"
          routerLink="/dashboard">Let's Get Lunch</a>
     </div><!--navbar-header-->
     <div class="collapse navbar-collapse" id="lgl-navbar">
       <ul class="nav navbar-nav navbar-right">
-        <li *ngIf="!isLoggedIn">
+        <li *ngIf="!isLoggedIn$">
           <a data-test="signup" routerLink="/signup">Signup</a>
         </li>
-        <li *ngIf="!isLoggedIn">
+        <li *ngIf="!isLoggedIn$">
           <a data-test="login" routerLink="/login">Login</a>
         </li>
-        <li *ngIf="isLoggedIn">
+        <li *ngIf="isLoggedIn$">
           <a data-test="events" routerLink="/events">Events</a>
         </li>
-        <li *ngIf="isLoggedIn">
+        <li *ngIf="isLoggedIn$">
           <a data-test="logout" routerLink="" (click)="logout()">Logout</a>
         </li>
       </ul>

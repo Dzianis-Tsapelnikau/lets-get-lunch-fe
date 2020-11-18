@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { Comment } from './comment';
+import { IComment } from './IComment';
 import { Observable } from 'rxjs';
 import { CommentsService } from './comments.service';
 
@@ -8,12 +8,12 @@ import { CommentsService } from './comments.service';
 export class CommentsServiceStub {
   public createSpy = jasmine.createSpy('create');
 
-  public create(comment: Comment): Observable<Comment> {
+  public create(comment: IComment): Observable<IComment> {
     return this.createSpy(comment);
   }
 
   public getEventCommentsSpy = jasmine.createSpy('getEventComments');
-  getEventComments(eventId: string): Observable<Array<Comment>> {
+  getEventComments(eventId: string): Observable<Array<IComment>> {
     return this.getEventCommentsSpy(eventId);
   }
 

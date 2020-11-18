@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AUTH_SERVICE_PROVIDER } from '../services/auth/authService.stub';
-import { Comment } from '../services/comments/comment';
+import { IComment } from '../services/comments/IComment';
 import { CommentsService } from '../services/comments/comments.service';
 import { COMMENTS_SERVICE_PROVIDER, CommentsServiceStub } from '../services/comments/comments.service.stub';
 
@@ -15,7 +15,7 @@ const eventId = '5a55135639fbc4ca3ee0ce5a';
 //   'username': 'myUser',
 //   '_id': '5a550ea739fbc4ca3ee0ce58'
 // };
-const comments: Array<Comment> = [
+const comments: Array<IComment> = [
   {
     '_id': '5a551b1039fbc4ca3ee0ce5b',
     'content': 'My first comment',

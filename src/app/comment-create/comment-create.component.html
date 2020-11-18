@@ -1,7 +1,7 @@
 <h3>Comments</h3>
 <div class="form-group comments-list">
   <div data-test="comment" class="well well-sm" *ngFor="let comment of comments">
-    "{{comment.content}}" <small><em>- {{comment._creator.username}}</em></small>
+    "{{comment.content}}" <small><em>- {{comment._creator}}</em></small> <!--.username-->
   </div>
 </div>
 <p data-test="noComments" class="alert alert-info" *ngIf="noComments">{{noComments}}</p>

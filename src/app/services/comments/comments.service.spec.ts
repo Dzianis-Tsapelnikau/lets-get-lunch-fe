@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { Comment } from './comment';
+import { IComment } from './IComment';
 import { COMMENTS_SERVICE_PROVIDER, COMMENTS_SERVICE_STUB, CommentsServiceStub } from './comments.service.stub';
 
 describe('CommentsService', () => {
@@ -24,12 +24,12 @@ describe('CommentsService', () => {
 
   describe('create', () => {
     it('should return a comment object with a valid comment details', () => {
-      const comment: Comment = {
+      const comment: IComment = {
         '_creator': '5a550ea739fbc4ca3ee0ce58',
         '_event': '5a55135639fbc4ca3ee0ce5a',
         'content': 'My first comment'
       };
-      const commentResponse: Comment = {
+      const commentResponse: IComment = {
         '__v': 0,
         'content': 'My first comment',
         'createdAt': '2018-01-09T19:42:08.048Z',
@@ -47,7 +47,7 @@ describe('CommentsService', () => {
       http.verify();
     });
     it('should return a 500 if a comment cannot be created', () => {
-      const comment: Comment = {
+      const comment: IComment = {
         '_creator': '5a550ea739fbc4ca3ee0ce58',
         '_event': '5a55135639fbc4ca3ee0ce5a',
         'content': ''

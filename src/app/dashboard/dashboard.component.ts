@@ -3,6 +3,7 @@ import { EventsService } from '../services/events/events.service';
 import { AuthService } from '../services/auth/auth.service';
 import { IEvent } from '../services/events/IEvent';
 import { Router } from '@angular/router';
+import { CalendarEvent } from 'angular-calendar';
 
 @Component({
   selector: 'app-dashboard',
@@ -37,8 +38,8 @@ export class DashboardComponent implements OnInit {
     return this.addEventColors(this.addJSDate(events));
   }
 
-  eventClicked(event: IEvent) {
-    this.router.navigate(['/event/' + event._id]);
+  eventClicked(event: CalendarEvent<unknown>) {
+    this.router.navigate(['/event/' + (event as unknown as IEvent)._id]);
   }
 
   addJSDate(events: Array<IEvent>) {
