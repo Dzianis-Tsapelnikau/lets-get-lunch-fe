@@ -1,4 +1,4 @@
-export interface Event {
+export interface IEvent {
   _creator: string;
   title: string;
   description?: string;

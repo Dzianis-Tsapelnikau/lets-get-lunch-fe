@@ -1,32 +1,24 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { AUTH_SERVICE_PROVIDER } from '../services/auth/authService.stub';
 
-import {LoginComponent} from './login.component';
-import {AuthService} from "../services/auth/auth.service";
-import {Router} from "@angular/router";
-import {DebugElement} from "@angular/core";
-import {LoginModule} from "./login.module";
-import {By} from "@angular/platform-browser";
-import {of, throwError} from "rxjs";
+import { LoginComponent } from './login.component';
+import { AuthService } from '../services/auth/auth.service';
+import { Router } from '@angular/router';
+import { DebugElement } from '@angular/core';
+import { LoginModule } from './login.module';
+import { By } from '@angular/platform-browser';
+import { of, throwError } from 'rxjs';
+import { ROUTER_PROVIDER } from './routerStub';
 
-class LoginPage{
-  loginBth: DebugElement;
-  usernameInput: HTMLInputElement;
-  passwordInput: HTMLInputElement;
+class LoginPage {
+  loginBth!: DebugElement;
+  usernameInput!: HTMLInputElement;
+  passwordInput!: HTMLInputElement;
 
-  addPageElements(){
+  addPageElements() {
     this.loginBth = fixture.debugElement.query(By.css('button'));
     this.usernameInput = fixture.debugElement.query(By.css('#username')).nativeElement;
     this.passwordInput = fixture.debugElement.query(By.css('#password')).nativeElement;
-  }
-}
-
-class MockAuthService {
-  login(credentials) {
-  }
-}
-
-class MockRouter {
-  navigate(path) {
   }
 }
 
@@ -44,8 +36,8 @@ describe('LoginComponent', () => {
       .overrideComponent(LoginComponent, {
         set: {
           providers: [
-            {provide: AuthService, useClass: MockAuthService},
-            {provide: Router, useClass: MockRouter}
+            AUTH_SERVICE_PROVIDER(),
+            ROUTER_PROVIDER()
           ]
         }
       })
@@ -59,7 +51,7 @@ describe('LoginComponent', () => {
     authService = fixture.debugElement.injector.get(AuthService);
     router = fixture.debugElement.injector.get(Router);
     fixture.detectChanges();
-    return fixture.whenStable().then(()=>{
+    return fixture.whenStable().then(() => {
       fixture.detectChanges();
       loginPage.addPageElements();
     });
@@ -69,40 +61,40 @@ describe('LoginComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should navigate to dashboard with valid credentials', ()=>  {
+  it('should navigate to dashboard with valid credentials', () => {
     loginPage.usernameInput.value = 'johndoe';
     loginPage.passwordInput.value = 'password';
     loginPage.usernameInput.dispatchEvent(new Event('input'));
     loginPage.passwordInput.dispatchEvent(new Event('input'));
 
-    spyOn(authService, 'login').and.callFake(()=>{
+    spyOn(authService, 'login').and.callFake(() => {
       return of({token: 'token'});
     });
 
-    spyOn(router,'navigate');
+    spyOn(router, 'navigate');
     loginPage.loginBth.nativeElement.click();
 
-    expect(authService.login).toHaveBeenCalledWith({username: 'johndoe',password:'password'});
+    expect(authService.login).toHaveBeenCalledWith({username: 'johndoe', password: 'password'});
     expect(router.navigate).toHaveBeenCalledWith(['/dashboard']);
   });
 
-  it('should display an error message for a user who does not exist', ()=>{
+  it('should display an error message for a user who does not exist', () => {
     loginPage.usernameInput.value = 'doesnotexist';
     loginPage.passwordInput.value = 'password';
     loginPage.usernameInput.dispatchEvent(new Event('input'));
     loginPage.passwordInput.dispatchEvent(new Event('input'));
 
-    spyOn(authService,'login').and.callFake(()=>{
+    spyOn(authService, 'login').and.callFake(() => {
       return throwError({error: {message: 'User could not be found.'}});
     });
-    spyOn(router,'navigate');
+    spyOn(router, 'navigate');
 
     loginPage.loginBth.nativeElement.click();
     fixture.detectChanges();
 
     expect(router.navigate).not.toHaveBeenCalled();
     const errorMessage = fixture.debugElement.query(By.css('.error'));
-    expect(authService.login).toHaveBeenCalledWith({username: 'doesnotexist',password:'password'});
+    expect(authService.login).toHaveBeenCalledWith({username: 'doesnotexist', password: 'password'});
     expect(errorMessage.nativeElement.textContent).toEqual('User could not be found.');
   });
 });

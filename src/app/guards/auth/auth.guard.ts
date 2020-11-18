@@ -12,20 +12,18 @@ import {
   Router
 } from '@angular/router';
 import { Observable } from 'rxjs';
-import {AuthService} from "../../services/auth/auth.service";
+import { AuthService } from '../../services/auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
   canActivate(): Observable<boolean> | Promise<boolean> | boolean {
-    if(this.authService.isLoggedIn())
-    {
+    if (this.authService.isLoggedIn()) {
       return true;
-    }
-    else{
+    } else {
       // TODO: Redirect to login
-      this.router.navigate(["/"]);
+      this.router.navigate(['/']);
       return false;
     }
   }

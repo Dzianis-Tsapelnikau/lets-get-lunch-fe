@@ -1,14 +1,14 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {EventListComponent} from './event-list.component';
-import {Event} from "../services/events/event";
+import {IEvent} from "../services/events/IEvent";
 import {EventListModule} from "./event-list.module";
 import {RouterTestingModule} from "@angular/router/testing";
 import {EventsService} from "../services/events/events.service";
 import {of} from "rxjs";
 import {By} from "@angular/platform-browser";
 
-const events: Array<Event> = [{
+const events: Array<IEvent> = [{
   '_id': '5a539459b689d341cccc4be8',
   '_creator': '5a539449b689d341cccc4be7',
   'title': 'Another event',

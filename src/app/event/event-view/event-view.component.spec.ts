@@ -2,14 +2,13 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {EventViewComponent} from './event-view.component';
 import {of} from "rxjs";
-import {Event} from "../../services/events/event";
+import {IEvent} from "../../services/events/IEvent";
 import {EventModule} from "../event.module";
 import {ActivatedRoute} from "@angular/router";
 import {EventsService} from "../../services/events/events.service";
-import {Mock} from "protractor/built/driverProviders";
 
 const eventId = '5a55135639fbc4ca3ee0ce5a';
-const event: Event = {
+const event: IEvent = {
   '_id': eventId,
   '_creator': '5a550ea739fbc4ca3ee0ce58',
   'title': 'My first event',

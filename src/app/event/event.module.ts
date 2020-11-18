@@ -3,11 +3,10 @@ import { CommonModule } from '@angular/common';
 
 import { EventRoutingModule } from './event-routing.module';
 import { EventCreateComponent } from './event-create/event-create.component';
-import {ReactiveFormsModule} from "@angular/forms";
-import {OwlDateTimeModule, OwlNativeDateTimeModule} from "ng-pick-datetime";
+import { ReactiveFormsModule } from '@angular/forms';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { EventViewComponent } from './event-view/event-view.component';
-import {CommentCreateModule} from "../comment-create/comment-create.module";
-
+import { CommentCreateModule } from '../comment-create/comment-create.module';
 
 @NgModule({
   declarations: [EventCreateComponent, EventViewComponent],
@@ -20,4 +19,5 @@ import {CommentCreateModule} from "../comment-create/comment-create.module";
     CommentCreateModule
   ]
 })
-export class EventModule { }
+export class EventModule {
+}

@@ -1,43 +1,52 @@
-import {EventEmitter, Injectable, Output} from '@angular/core';
-import {User} from "./user";
-import {Observable} from "rxjs";
-import {HttpClient} from "@angular/common/http";
-import {map, mergeMap} from "rxjs/operators";
-import {JwtHelperService} from "@auth0/angular-jwt";
+import { EventEmitter, Injectable, Output } from '@angular/core';
+import { Nullable } from '../nullable';
+import { User } from '../user';
+import { IUser } from './IUser';
+import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { map, mergeMap } from 'rxjs/operators';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   public static AuthorizationLocalStorageItemName = 'Authorization';
-  @Output() loggedIn: EventEmitter<boolean>;
 
-  constructor(private http: HttpClient, private jwtHelper: JwtHelperService) {
-    this.loggedIn = new EventEmitter<boolean>();
+  private readonly _loggedIn$: ReplaySubject<boolean>;
+  public get loggedIn$(): ReplaySubject<boolean> {
+    return this._loggedIn$;
   }
 
-  signup(user: User): Observable<object> {
-    return this.http.post('http://localhost:8080/api/users', user).pipe(mergeMap(res => this.login(user)));
+  private readonly _currentUser$: BehaviorSubject<Nullable<User>>;
+  public get currentUser$(): BehaviorSubject<Nullable<User>> {
+    return this._currentUser$;
   }
 
-  login(user: User): Observable<object> {
-    return this.http.post('http://localhost:8080/api/sessions', user).pipe(map((res: any) => {
+  constructor(private _httpClient: HttpClient, private _jwtHelper: JwtHelperService) {
+    this._loggedIn$ = new ReplaySubject<boolean>(1);
+    this._currentUser$ = new BehaviorSubject<Nullable<User>>(null);
+  }
+
+  signup(user: IUser): Observable<object> {
+    return this._httpClient.post('_httpClient://localhost:8080/api/users', user).pipe(mergeMap(res => this.login(user)));
+  }
+
+  login(user: IUser): Observable<object> {
+    return this._httpClient.post('_httpClient://localhost:8080/api/sessions', user).pipe(map((res: any) => {
       localStorage.setItem(AuthService.AuthorizationLocalStorageItemName, res.token);
-      this.loggedIn.emit(true);
+      this._currentUser$.next(this._jwtHelper.decodeToken(localStorage.getItem(AuthService.AuthorizationLocalStorageItemName)||undefined));
+      this._loggedIn$.next(true);
       return res;
     }));
   }
 
   isLoggedIn(): boolean {
-    return !this.jwtHelper.isTokenExpired();
+    return !this._jwtHelper.isTokenExpired();
   }
 
-  logout() {
+  logout(): void {
     localStorage.removeItem(AuthService.AuthorizationLocalStorageItemName);
-    this.loggedIn.emit(false);
-  }
-
-  get currentUser() {
-    return this.jwtHelper.decodeToken(localStorage.getItem(AuthService.AuthorizationLocalStorageItemName));
+    this.loggedIn$.next(false);
   }
 }

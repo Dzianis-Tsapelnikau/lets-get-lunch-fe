@@ -1,19 +1,20 @@
-import {TestBed} from '@angular/core/testing';
-
-import {CommentsService} from './comments.service';
-import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
-import {Comment} from "./comment";
+import { TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { Comment } from './comment';
+import { COMMENTS_SERVICE_PROVIDER, COMMENTS_SERVICE_STUB, CommentsServiceStub } from './comments.service.stub';
 
 describe('CommentsService', () => {
-  let service: CommentsService;
+  let service: CommentsServiceStub;
   let http: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [CommentsService]
+      providers: [COMMENTS_SERVICE_PROVIDER()]
     });
-    service = TestBed.inject(CommentsService);
+  });
+  beforeEach(()=>{
+    service = COMMENTS_SERVICE_STUB();
     http = TestBed.inject(HttpTestingController);
   });
 
@@ -49,14 +50,14 @@ describe('CommentsService', () => {
       const comment: Comment = {
         '_creator': '5a550ea739fbc4ca3ee0ce58',
         '_event': '5a55135639fbc4ca3ee0ce5a',
-        'content': undefined
+        'content': ''
       };
       const commentResponse = 'Comment could not be created!';
-      service.create(comment).subscribe(res => {
+      let errorResponse = {error: {message: ''}};
+      service.create(comment).subscribe(() => {
       }, error => {
         errorResponse = error;
-      })
-      let errorResponse;
+      });
       http.expectOne('http://localhost:8080/api/comments').flush({message: commentResponse}, {
         status: 500,
         statusText: 'Server Error'
@@ -94,9 +95,9 @@ describe('CommentsService', () => {
     it('should return a 500 if an error occurs', () => {
       const eventId = '5a55135639fbc4ca3ee0ce5a';
       const commentResponse = 'Something went wrong!';
-      let errorResponse;
+      let errorResponse = {error: {message: ''}};
 
-      service.getEventComments(eventId).subscribe(res => {
+      service.getEventComments(eventId).subscribe(() => {
       }, error => errorResponse = error);
       http.expectOne(`http://localhost:8080/api/comments/event/${eventId}`).flush({message: commentResponse}, {
         status: 500,

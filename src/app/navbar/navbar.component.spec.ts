@@ -1,36 +1,24 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { take } from 'rxjs/operators';
+import { ROUTER_PROVIDER } from '../login/routerStub';
+import { AUTH_SERVICE_PROVIDER, AUTH_SERVICE_STUB, AuthServiceStub } from '../services/auth/authService.stub';
 
-import {NavbarComponent} from './navbar.component';
-import {of} from "rxjs";
-import {AuthService} from "../services/auth/auth.service";
-import {Router} from "@angular/router";
-import {By} from "@angular/platform-browser";
-
-class MockRouter {
-  navigate(path) {
-  }
-}
-
-class MockAuthService {
-  loggedIn = of();
-  logout = jasmine.createSpy('logout');
-
-  isLoggedIn() {
-  }
-}
+import { NavbarComponent } from './navbar.component';
+import { Router } from '@angular/router';
+import { By } from '@angular/platform-browser';
 
 describe('NavbarComponent', () => {
   let component: NavbarComponent;
   let fixture: ComponentFixture<NavbarComponent>;
-  let authService: AuthService;
+  let authService: AuthServiceStub;
   let router: Router;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [NavbarComponent],
       providers: [
-        {provide: AuthService, useClass: MockAuthService},
-        {provide: Router, useClass: MockRouter}
+        AUTH_SERVICE_PROVIDER(),
+        ROUTER_PROVIDER()
       ]
     })
       .compileComponents();
@@ -39,7 +27,7 @@ describe('NavbarComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(NavbarComponent);
     component = fixture.componentInstance;
-    authService = fixture.debugElement.injector.get(AuthService);
+    authService = AUTH_SERVICE_STUB();
     router = fixture.debugElement.injector.get(Router);
   });
 
@@ -49,13 +37,15 @@ describe('NavbarComponent', () => {
 
   describe('with a user who is logged in', () => {
     beforeEach(() => {
-      authService.isLoggedIn = jasmine.createSpy('isLoggedIn').and.returnValue(true);
+      authService.loggedInSpy.and.returnValue(true);
       fixture.detectChanges();
     });
 
     it('should initialize to see if a user is logged in', () => {
-      expect(authService.isLoggedIn).toHaveBeenCalled();
-      expect(component.isLoggedIn).toBe(true);
+      expect(authService.loggedInSpy).toHaveBeenCalled();
+      component.isLoggedIn$.toPromise().then(value => {
+        expect(value).toBe(true);
+      });
     });
 
     it('should have a link to the dashboard when clicking the brand name', () => {
@@ -75,17 +65,19 @@ describe('NavbarComponent', () => {
       component.logout();
       expect(authService.logout).toHaveBeenCalled();
       expect(router.navigate).toHaveBeenCalledWith(['/']);
-    })
+    });
   });
 
   describe('with a user who is not logged in', () => {
     beforeEach(() => {
-      authService.isLoggedIn = jasmine.createSpy('isLoggedIn').and.returnValue(false);
+      authService.loggedInSpy.and.returnValue(false);
       fixture.detectChanges();
     });
     it('should initialize to se if a user is logged in', () => {
-      expect(authService.isLoggedIn).toHaveBeenCalled();
-      expect(component.isLoggedIn).toBe(false);
+      expect(authService.loggedInSpy).toHaveBeenCalled();
+      component.isLoggedIn$.toPromise().then(value => {
+        expect(value).toBe(false);
+      })
     });
     it('should have a link to the homepage when clicking the brand name', () => {
       const link = fixture.debugElement.query(By.css('.navbar-brand'));

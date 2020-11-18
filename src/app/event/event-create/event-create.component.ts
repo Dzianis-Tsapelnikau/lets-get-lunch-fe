@@ -1,11 +1,8 @@
-import {Component, ElementRef, NgZone, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {MapsAPILoader} from "@agm/core";
 import {EventsService} from "../../services/events/events.service";
 import {AuthService} from "../../services/auth/auth.service";
-import {Event} from "../../services/events/event";
-
-declare var google: any;
+import {IEvent} from "../../services/events/IEvent";
 
 @Component({
   selector: 'app-event-create',
@@ -13,31 +10,19 @@ declare var google: any;
   styleUrls: ['./event-create.component.css']
 })
 export class EventCreateComponent implements OnInit {
-  eventForm: FormGroup;
-  error: string;
-  success: string;
+  eventForm!: FormGroup;
+  error!: string;
+  success!: string;
 
-  constructor(private formBuilder: FormBuilder, private gmaps: MapsAPILoader, private ngZone: NgZone, private eventsService: EventsService, private authService: AuthService) {
+  constructor(private _formBuilder: FormBuilder, private _eventsService: EventsService, private _authService: AuthService) {
   }
 
   ngOnInit(): void {
     this.createForm();
-    // this.gmaps.load().then(() => {
-    //   const autocomplete = new google.maps.places.Autocomplete(this.citySearch.nativeElement, {
-    //     types: ['(cities)'],
-    //     componentRestrictions: {country: 'us'}
-    //   });
-    //   autocomplete.addListener('place_changed', () => {
-    //     this.ngZone.run(() => {
-    //       this.location = autocomplete.getPlace();
-    //       console.log('location',this.location);
-    //     });
-    //   });
-    // });
   }
 
   createForm() {
-    this.eventForm = this.formBuilder.group({
+    this.eventForm = this._formBuilder.group({
       title: ['', Validators.required],
       description: [''],
       location: ['', Validators.required],
@@ -51,9 +36,9 @@ export class EventCreateComponent implements OnInit {
     this.error = '';
     this.success = '';
 
-    const user = this.authService.currentUser;
-    const event: Event = {
-      _creator: user._id,
+    const user = this._authService.currentUser$;
+    const event: IEvent = {
+      _creator: user.getValue()!.id,
       title: this.eventForm.value.title,
       description: this.eventForm.value.description,
       startTime: this.eventForm.value.startTime,
@@ -61,7 +46,7 @@ export class EventCreateComponent implements OnInit {
       location: this.eventForm.value.location,
       suggestLocations: this.eventForm.value.suggestLocations
     };
-    this.eventsService.create(event).subscribe(res => {
+    this._eventsService.create(event).subscribe(() => {
       this.success = 'Your event has been created.';
     }, error => {
       this.error = error.error.message;

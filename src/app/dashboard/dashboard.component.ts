@@ -1,8 +1,8 @@
-import {Component, OnInit} from '@angular/core';
-import {EventsService} from "../services/events/events.service";
-import {AuthService} from "../services/auth/auth.service";
-import {Event} from "../services/events/event";
-import {Router} from "@angular/router";
+import { Component, OnInit } from '@angular/core';
+import { EventsService } from '../services/events/events.service';
+import { AuthService } from '../services/auth/auth.service';
+import { IEvent } from '../services/events/IEvent';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,38 +10,38 @@ import {Router} from "@angular/router";
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  events: Array<Event>
+  events!: Array<IEvent>;
   view = 'week';
   viewDate: Date = new Date();
-  error: string;
-  noEvents: string;
+  error!: string;
+  noEvents!: string;
 
   constructor(private authService: AuthService, private eventsService: EventsService, private router: Router) {
   }
 
   ngOnInit(): void {
-    const userId = this.authService.currentUser._id;
+    const userId = this.authService.currentUser$.getValue()!.id;
     this.eventsService.getUserEvents(userId).subscribe(res => {
       console.log('events for user', res);
       if (res) {
         this.events = this.mapEvents(res);
       } else {
-        this.noEvents = 'You are not a member of any events.'
+        this.noEvents = 'You are not a member of any events.';
       }
     }, error1 => {
       this.error = error1.error.message;
-    })
+    });
   }
 
-  mapEvents(events: Array<Event>): Array<Event> {
+  mapEvents(events: Array<IEvent>): Array<IEvent> {
     return this.addEventColors(this.addJSDate(events));
   }
 
-  eventClicked(event: Event) {
-    this.router.navigate(['/event/'+event._id]);
+  eventClicked(event: IEvent) {
+    this.router.navigate(['/event/' + event._id]);
   }
 
-  addJSDate(events: Array<Event>) {
+  addJSDate(events: Array<IEvent>) {
     return events.map((event) => {
       event.start = new Date(event.startTime);
       event.end = new Date(event.endTime);
@@ -49,7 +49,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  addEventColors(events: Array<Event>) {
+  addEventColors(events: Array<IEvent>) {
     return events.map((event) => {
       event.color = {primary: '#1E90FF', secondary: '#D1E8FF'};
       return event;

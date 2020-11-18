@@ -1,5 +1,5 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {Event} from "../services/events/event";
+import {IEvent} from "../services/events/IEvent";
 import {DashboardComponent} from './dashboard.component';
 import {of} from "rxjs";
 import {DashboardModule} from "./dashboard.module";
@@ -14,7 +14,7 @@ const currentUser = {
   'username': 'myUser',
   '_id': '5a550ea739fbc4ca3ee0ce58'
 };
-const events: Array<Event> = [{
+const events: Array<IEvent> = [{
   '_id': '5a55135639fbc4ca3ee0ce5a',
   '_creator': '5a550ea739fbc4ca3ee0ce58',
   'title': 'My first event',
@@ -82,7 +82,7 @@ describe('DashboardComponent', () => {
     router = fixture.debugElement.injector.get(Router);
     spyOn(component, "addEventColors").and.callThrough();
     spyOn(component, "addJSDate").and.callThrough();
-    spyOnProperty(authService, 'currentUser', 'get').and.callThrough();
+    spyOnProperty(authService, 'currentUser$', 'get').and.callThrough();
     fixture.detectChanges();
     return fixture.whenStable().then(() => {
       fixture.detectChanges();

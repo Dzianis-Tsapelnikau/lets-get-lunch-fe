@@ -1,7 +1,7 @@
-import {Component, OnInit} from '@angular/core';
-import {AuthService} from "../services/auth/auth.service";
-import {Router} from "@angular/router";
-import {User} from "../services/auth/user";
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../services/auth/auth.service';
+import { Router } from '@angular/router';
+import { IUser } from '../services/auth/IUser';
 
 @Component({
   selector: 'app-login',
@@ -9,8 +9,16 @@ import {User} from "../services/auth/user";
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  user: User = {username: '', password: ''};
-  errorMessage: string;
+  private _errorMessage!: string;
+  get errorMessage(): string {
+    return this._errorMessage;
+  }
+
+  set errorMessage(value: string) {
+    this._errorMessage = value;
+  }
+
+  user: IUser = {username: '', password: ''};
 
   constructor(private authService: AuthService, private router: Router) {
   }
@@ -18,11 +26,11 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  login(credentials: User) {
-    this.authService.login(credentials).subscribe(res => {
+  login(credentials: IUser) {
+    this.authService.login(credentials).subscribe(() => {
       this.router.navigate(['/dashboard']);
     }, error => {
-      this.errorMessage = error.error.message
+      this._errorMessage = error.error.message;
     });
   }
 }

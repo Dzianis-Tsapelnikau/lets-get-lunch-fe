@@ -44,3 +44,13 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+/src/.idea/.idea.src.dir/.idea/aws.xml
+/src/.idea/.idea.src.dir/.idea/codeStyles/codeStyleConfig.xml
+/src/.idea/.idea.src.dir/.idea/contentModel.xml
+/src/.idea/.idea.src.dir/.idea/encodings.xml
+/src/.idea/.idea.src.dir/.idea/indexLayout.xml
+/src/.idea/.idea.src.dir/.idea/modules.xml
+/src/.idea/.idea.src.dir/.idea/projectSettingsUpdater.xml
+/src/.idea/.idea.src.dir/riderModule.iml
+/src/.idea/.idea.src.dir/.idea/vcs.xml
+/src/.idea/.idea.src.dir/.idea/workspace.xml

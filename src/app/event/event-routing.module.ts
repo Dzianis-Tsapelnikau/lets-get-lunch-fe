@@ -1,8 +1,8 @@
-import {NgModule} from '@angular/core';
-import {Routes, RouterModule} from '@angular/router';
-import {EventCreateComponent} from "./event-create/event-create.component";
-import {AuthGuard} from "../guards/auth/auth.guard";
-import {EventViewComponent} from "./event-view/event-view.component";
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { EventCreateComponent } from './event-create/event-create.component';
+import { AuthGuard } from '../guards/auth/auth.guard';
+import { EventViewComponent } from './event-view/event-view.component';
 
 const routes: Routes = [
   {

@@ -2,21 +2,15 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "noImplicitAny": false,
-    "noUnusedParameters": false,
-    "noUnusedLocals": false,
     "types": [
-      "jasmine",
       "node"
     ]
   },
   "files": [
-    "src/test.ts",
+    "src/main.ts",
     "src/polyfills.ts"
   ],
   "include": [
-    "src/**/*.spec.ts",
-    "src/**/*.d.ts",
-    "src/**/testing/*.ts"
+    "src/**/*.d.ts"
   ]
 }
